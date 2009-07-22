@@ -74,7 +74,16 @@ class User < ActiveRecord::Base
   # validates_presence_of :username, :message => "^Please specify the username."
   # validates_presence_of :email,    :message => "^Please specify your email address."
 
-  #----------------------------------------------------------------------------
+  
+#HACK
+def persistence_token
+   false
+end
+def persistence_token=(pt)
+  false
+end
+
+	#----------------------------------------------------------------------------
   def name
     self.first_name.blank? ? self.username : self.first_name
   end
