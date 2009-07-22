@@ -17,6 +17,7 @@
 
 class ApplicationController < ActionController::Base
   helper :all
+  
   helper_method :current_user_session, :current_user
   helper_method :called_from_index_page?, :called_from_landing_page?
 
@@ -42,7 +43,7 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
   def current_user
     @current_user ||= (current_user_session && current_user_session.record)
-    #THIS IS A CHANGE
+    @current_user ||= User.find_by_api_token(params[:token])
   end
   
   #----------------------------------------------------------------------------
