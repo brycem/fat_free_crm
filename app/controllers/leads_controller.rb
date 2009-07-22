@@ -32,6 +32,7 @@ class LeadsController < ApplicationController
       format.html # index.html.erb
       format.js   # index.js.rjs
       format.xml  { render :xml => @leads }
+      format.atom 
     end
   end
 
@@ -91,6 +92,7 @@ class LeadsController < ApplicationController
   # POST /leads.xml                                                        AJAX
   #----------------------------------------------------------------------------
   def create
+    params[:lead] ||= params[:request][:lead]
     @lead = Lead.new(params[:lead])
     @users = User.except(@current_user).all
     @campaigns = Campaign.my(@current_user).all(:order => "name")
@@ -102,7 +104,14 @@ class LeadsController < ApplicationController
           get_data_for_sidebar
         end
         format.js   # create.js.rjs
-        format.xml  { render :xml => @lead, :status => :created, :location => @lead }
+        format.xml  do
+          comment = @lead.comments.build
+          comment.title = "input from user"
+          comment.comment = params[:request][:comment]
+          comment.user_id = current_user.id
+          comment.save!
+          render :xml => @lead, :status => :created, :location => @lead
+        end
       else
         format.js   # create.js.rjs
         format.xml  { render :xml => @lead.errors, :status => :unprocessable_entity }
