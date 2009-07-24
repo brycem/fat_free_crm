@@ -105,11 +105,14 @@ class LeadsController < ApplicationController
         end
         format.js   # create.js.rjs
         format.xml  do
-          comment = @lead.comments.build
-          comment.title = "input from user"
-          comment.comment = params[:request][:comment]
-          comment.user_id = current_user.id
-          comment.save!
+          unless params[:request][:comment].blank?
+            comment = @lead.comments.build do |c|
+              c.title = "input from user"
+              c.comment = params[:request][:comment]
+              c.user_id = current_user.id
+            end
+            comment.save!
+          end
           render :xml => @lead, :status => :created, :location => @lead
         end
       else
