@@ -77,16 +77,7 @@ class User < ActiveRecord::Base
   before_create :add_api_token
   # validates_presence_of :username, :message => "^Please specify the username."
   # validates_presence_of :email,    :message => "^Please specify your email address."
-
   
-#FIXME HACK HACK HACK!!!! DON'T PUT THIS INTO PRODUCTION
-def persistence_token
-   false
-end
-def persistence_token=(pt)
-  false
-end
-
   def add_api_token
     self.api_token = Digest::SHA1.hexdigest(Time.now.to_s)
   end
