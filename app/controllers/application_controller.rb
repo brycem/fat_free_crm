@@ -43,7 +43,11 @@ class ApplicationController < ActionController::Base
   #----------------------------------------------------------------------------
   def current_user
     @current_user ||= (current_user_session && current_user_session.record)
+<<<<<<< HEAD:app/controllers/application_controller.rb
     @current_user ||= User.find_by_api_token(params[:token])
+=======
+    User.current_user = @current_user
+>>>>>>> 140830f7e6c849b0d163f5436dd67400d4c9b64f:app/controllers/application_controller.rb
   end
   
   #----------------------------------------------------------------------------
