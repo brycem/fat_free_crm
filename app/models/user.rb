@@ -31,7 +31,7 @@
 #  deleted_at        :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
-#
+#  api_token         :string
 
 # Fat Free CRM
 # Copyright (C) 2008-2009 by Michael Dvorkin
@@ -49,6 +49,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #------------------------------------------------------------------------------
+
+require "digest/sha1"
 class User < ActiveRecord::Base
   
   has_one  :avatar, :as => :entity, :dependent => :destroy
@@ -62,6 +64,7 @@ class User < ActiveRecord::Base
   has_many :preferences
   has_many :shared_accounts, :through => :permissions, :source => :asset, :source_type => "Account", :class_name => "Account"
   named_scope :except, lambda { | user | { :conditions => "id != #{user.id}" } }
+  
   uses_mysql_uuid
   acts_as_paranoid
   acts_as_authentic do |c|
@@ -70,12 +73,13 @@ class User < ActiveRecord::Base
     c.validates_uniqueness_of_email_field_options = { :message => "^There is another user with the same email." }
     c.validates_length_of_password_field_options  = { :minimum => 3 }
   end
-
+  
+  before_create :add_api_token
   # validates_presence_of :username, :message => "^Please specify the username."
   # validates_presence_of :email,    :message => "^Please specify your email address."
 
   
-#HACK
+#FIXME HACK HACK HACK!!!! DON'T PUT THIS INTO PRODUCTION
 def persistence_token
    false
 end
@@ -83,6 +87,9 @@ def persistence_token=(pt)
   false
 end
 
+  def add_api_token
+    self.api_token = Digest::SHA1.hexdigest(Time.now.to_s)
+  end
 	#----------------------------------------------------------------------------
   def name
     self.first_name.blank? ? self.username : self.first_name

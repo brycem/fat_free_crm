@@ -16,3 +16,5 @@
       - else
         = "Phone: <b>#{@user.phone}</b>" unless @user.phone.blank?
         = "Mobile: <b>#{@user.mobile}</b>" unless @user.mobile.blank?
+      %div= "User ID: <b>" + @user.id.to_s  + "</b>"
+      %div= "API token: <b>" + @user.api_token + "</b>"

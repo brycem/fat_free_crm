@@ -3,7 +3,7 @@
     - if current_user
       Welcome,
       -# This span gets updated on the fly if user changes her name.
-      %span#welcome_username= @current_user.name
+      %span#welcome_username= link_to @current_user.name, user_path(@current_user.uuid)
       %span> !&nbsp;&nbsp;
 
       = link_to("Quick find", "#", :id => "jumper") << " | "
@@ -15,4 +15,4 @@
       = link_to("Sign Up", signup_path)
       -# link_to("Help", "/")
   %h3
-    = link_to("Fat Free CRM", root_path)
+    = link_to("BME Customer Relations", root_path)
